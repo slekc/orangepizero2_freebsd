@@ -121,7 +121,7 @@ Enter the following commands:
 <PRE><CODE>
 # bash
 
-# echo "${{PC_IP}} $(hostname)" >> /etc/hosts
+# echo "$(ifconfig|grep broadcast|awk '{print $2}') $(hostname)" >> /etc/hosts
 </CODE></PRE>
 Great! Everything is ready now to build the FreeBSD from sources for OrangePI Zero 2 which has architecture arm64.
 <H2 id=p2>2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero 2 and build everything.</H2>

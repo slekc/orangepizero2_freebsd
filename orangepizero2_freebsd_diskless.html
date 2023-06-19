@@ -11,12 +11,49 @@ pre code {
 </HEAD><BODY>
 <H1>How to run diskless FreeBSD 13.2 on OrangePI Zero 2.</H1>
 <P><A href="LICENSE">License of this document</A></P>
-<P>Whole process from scratch.<BR/>
-Everything is built from sources.
-</P>
+<P>Whole process from scratch.<BR/>Everything is built from sources.</P>
+<H2>Table of content.</H2>
+<UL>
+	<LI><A href="#atg">About this guide.</A></LI>
+	<LI><A href="#hiw">How it works.</A></LI>
+	<LI><A href="#req">Requirements.</A></LI>
+	<LI><A href="#p1">1. Prepare FreeBSD build machine on PC.</A><UL>
+	<LI><A href="#p1">1. Prepare FreeBSD build machine on PC.</A><UL>
+		<LI><A href="#p1.1">1.1. Get image of installatin CD.</A></LI>
+		<LI><A href="#p1.2">1.2. Install FreeBSD on the PC from the CD image.</A></LI>
+		<LI><A href="#p1.3">1.3 Continue on freshly installed FreeBSD 13.2.</A></LI>
+	</UL></LI>
+	<LI><A href="#p2">2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero 2 and build everything.</A><UL>
+		<LI><A href="#p2.1">2.1. Obtain the sources.</A></LI>
+		<LI><A href="#p2.2">2.2. Make the patch for build dtb-file which will see the ethernet interface of OrangePI Zero 2.</A></LI>
+		<LI><A href="#p2.3">2.3. Build everything and put the root of the system into NFSROOT</A></LI>
+	</UL></LI>
+	<LI><A href="#p3">3. Additional settings for diskless clients.</A><UL>
+		<LI><A href="#p3.1">Creating general configuration for for diskless clients.</A></LI>
+		<LI><A href="#p3.2">Allow root to do remote login to Orange PI Zero 2.</A></LI>
+		<LI><A href="#p3.3">Script for u-boot to let us know that the boot process has been started.</A></LI>
+	</UL></LI>
+	<LI><A href="#p4">4. Preparing Orange PI Zero 2 for diskless boot.</A><UL>
+		<LI><A href="#p4.1">4.1. Create u-boot binary file and script for writing to SPI-Flash.</A><UL>
+			<LI><A href="#p4.1.1">4.1.1. Create firmware binary file bl31.</A></LI>
+			<LI><A href="#p4.1.2">4.1.2. Obtain u-boot sources and build u-boot binary.</A></LI>
+			<LI><A href="#p4.1.3">4.1.3. Prepare the script for write u-boot binary to OPI SPI-Flash memory.</A></LI>
+		</UL></LI>
+		<LI><A href="#p4.2">4.2. Prepare microSD card.</A></LI>
+		<LI><A href="#p4.3">4.3. Write u-boot image to OPI SPI-Flash memory.</A></LI>
+		<LI><A href="#p4.4">4.4. Configure OPI to boot from SPI-Flash.</A></LI>
+		<LI><A href="#p4.5">4.5. Discovering of MAC-address of OPI.</A></LI>
+	</UL></LI>
+	<LI><A href="#p5">5. Preparing the network infrastructure.</A><UL>
+		<LI><A href="#p5.1">5.1. Setup TFTP and NFS servers on PC.</A></LI>
+		<LI><A href="#p5.2">5.2. Configure DHCP server.</A></LI>
+	</UL></LI>
+	<LI><A href="#p6">6. Testing.</A></LI>
+</UL>
+<H2 id=atg>About this guide.</H2>
 <P>This guide is covering everything till the moment when we will be able ssh to root to FreeBSD on OrangePI Zero 2 (further in the document we may call it OPI).</P>
 <P>After the installation the OrangePI Zero 2 will be able to boot from the network without any microSD card installed.</P>
-<H2>Roughly, how that particular diskless work.</H2>
+<H2 id=hiw>Roughly, how that particular diskless works.</H2>
 <P>It is not using PXE protocol.<BR/>
 It is using default boot scripts embeeded in the latest u-boot version.</P>
 <P>The Orange PI Zero 2 hardware loads u-boot application from 2 megabytes SPI-Flash memory, which is installed onboard,
@@ -32,7 +69,7 @@ from the root URI, which is NFS server, and starts the kernel passing root URI t
 it and works using root filesystem which is placed on NSF server as it would be a usual local disk.</P>
 <B>IMPORTANT:</B> For simplify the things this installation considers that the root filesystem on the dedicated directory on the NFS server will be used exclusevely only by one Orange PI Zero 2.<BR/>
 For shared diskless installation we will need slightly more complicated instructions, probably, it will be posted later.
-<H2>What we will need.</H2>
+<H2 id=req>What we will need.</H2>
 We will need the following:
 <UL>
 <LI>PC architecture amd64, 2 core processor, 4GB RAM, 50GB HDD with microSD card adapter. Just note: that PC will keep all the files for FreeBSD OrangePI Zero 2 diskless system.</LI>
@@ -46,17 +83,17 @@ We will need the following:
 
 <b>IMPORTANT NOTE:</b> everywhere in the document we must replace ${{SOME_TEXT}} to the thing which is described by SOME_TEXT, example: ${{OPI_IP}} must be replaced to IP address of OPI.
 
-<H2>1. Prepare FreeBSD build machine on PC.</H2>
-<H3>1.1. Get image of installatin CD from here:</H3>
+<H2 id=p1>1. Prepare FreeBSD build machine on PC.</H2>
+<H3 id=p1.1>1.1. Get image of installatin CD from here:</H3>
 <A HREF="https://download.freebsd.org/releases/amd64/amd64/ISO-IMAGES/13.2/FreeBSD-13.2-RELEASE-amd64-disc1.iso.xz">FreeBSD 13.2</A>
-<H3>1.2. Install FreeBSD on the PC from the CD image.</H3>
+<H3 id=p1.2>1.2. Install FreeBSD on the PC from the CD image.</H3>
 <UL>
 <LI>Answer all installation questions as default.</LI>
 <LI>Set static IP address: ${{PC_IP}}
 <LI>Additional services started at boot: ntpdate, ntpd.
 <LI>Create additional username: "build" invite to additional group "wheel"</LI>
 </UL>
-<H3>1.3 Continue on freshly installed FreeBSD 13.2:</H3>
+<H3 id=p1.3>1.3 Continue on freshly installed FreeBSD 13.2:</H3>
 ssh to build@${{PC_IP}} and enter the commands, answering "Y" on all questions:
 <PRE><CODE>
 $ su -
@@ -87,8 +124,8 @@ Enter the following commands:
 # echo "${{PC_IP}} $(hostname)" >> /etc/hosts
 </CODE></PRE>
 Great! Everything is ready now to build the FreeBSD from sources for OrangePI Zero 2 which has architecture arm64.
-<H2>2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero 2 and build everything.</H2>
-<H3>2.1. Obtain the sources</H3>
+<H2 id=p2>2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero 2 and build everything.</H2>
+<H3 id=p2.1>2.1. Obtain the sources.</H3>
 ssh to build@${{PC_IP}} and execute the commands:
 <PRE><CODE>
 $ bash
@@ -117,7 +154,7 @@ $ cd src
 
 $ git checkout release/13.2.0
 </CODE></PRE>
-<H3>2.2. Make the patch for build dtb-file which will see the ethernet interface of OrangePI Zero 2</H3>
+<H3 id=p2.2>2.2. Make the patch for build dtb-file which will see the ethernet interface of OrangePI Zero 2.</H3>
 Note: FreeBSD 13.2 does not oficially support Orange PI Zero 2, so, we have to do that patch.<BR/>
 The patch will allow FreeBSD 13.2 to see only ethernet interface, USB and microSD card will still be unavailable.<BR/>
 We are making diskless station, so, only ethernet will be enough for us.
@@ -175,7 +212,7 @@ $ echo '56a57
 $ mv Makefile.patched Makefile
 </CODE></PRE>
 
-<H3>2.3. Build everything and put the root of the system into /exports/orangepizero2-${{HOSTNAME_OF_OPI}}</H3>
+<H3 id=p2.3>2.3. Build everything and put the root of the system into /exports/orangepizero2-${{HOSTNAME_OF_OPI}}</H3>
 Continue entering commands on the same command line as before:
 <PRE><CODE>
 $ DESTDIR=/exports/orangepizero2-${{HOSTNAME_OF_OPI}}
@@ -196,9 +233,9 @@ $ sudo -E make distribution TARGET_ARCH=aarch64 DESTDIR=$DESTDIR
 
 $ sudo -E make installkernel TARGET_ARCH=aarch64 KERNCONF=GENERIC DESTDIR=$DESTDIR
 </CODE></PRE>
-<H2>3. Additional settings for diskless clients.</H2>
+<H2 id=p3>3. Additional settings for diskless clients.</H2>
 These settings will be done in the diskless clients root filesystem which we have placed at /exports/orangepizero2-${{HOSTNAME_OF_OPI}}
-<H3>3.1. Creating general configuration for for diskless clients.</H3>
+<H3 id=p3.1>3.1. Creating general configuration for for diskless clients.</H3>
 Continue entering commands on the same command line as before:
 <PRE><CODE>
 $ sudo bash
@@ -219,7 +256,7 @@ ntpd_enable="YES"' > /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/etc/rc.conf
 ${{PC_IP}}:/exports/orangepizero2-${{HOSTNAME_OF_OPI}} /      nfs     rw            0     0
 proc                                                   /proc  procfs  rw            0     0' > /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/etc/fstab
 </CODE></PRE>
-<H3>3.2. Allow root to do remote login to Orange PI Zero 2.</H3>
+<H3 id=p3.2>3.2. Allow root to do remote login to Orange PI Zero 2.</H3>
 After everything will be started, we need remote root access to our OPI for continue the configuration.<BR/>
 So, we are changing sshd configuration and putting our ssh public key to the OPI root home directory.<BR/>
 Continue entering commands on the same command line as before:
@@ -240,7 +277,7 @@ Continue entering commands on the same command line as before:
 
 # exit
 </CODE></PRE>
-<H3>3.3. Script for u-boot to let us know that the boot process has been started.</H3>
+<H3 id=p3.3>3.3. Script for u-boot to let us know that the boot process has been started.</H3>
 Continue entering commands on the same command line as before:
 <PRE><CODE>
 $ cd ~/u-boot
@@ -256,10 +293,10 @@ $ exit
 $ exit
 
 </CODE></PRE>
-<H2>4. Preparing Orange PI Zero 2 for diskless boot.</H2>
-<H3>4.1. Create u-boot binary file and script for writing to SPI-Flash.</H3>
+<H2 id=p4>4. Preparing Orange PI Zero 2 for diskless boot.</H2>
+<H3 id=p4.1>4.1. Create u-boot binary file and script for writing to SPI-Flash.</H3>
 ssh to build@${{PC_IP}}
-<H4>4.1.1 Create firmware binary file bl31.</H4>
+<H4>4.1.1. Create firmware binary file bl31.</H4>
 Execute commands:
 <PRE><CODE>
 $ bash
@@ -280,7 +317,7 @@ $ gmake realclean
 
 $ TF_LDFLAGS="--no-warn-rwx-segment" gmake CROSS_COMPILE=aarch64-none-elf- PLAT=sun50i_h616 bl31
 </CODE></PRE>
-<H4>4.1.2. Obtain u-boot sources and build u-boot binary.</H4>
+<H4 id=p4.1.2>4.1.2. Obtain u-boot sources and build u-boot binary.</H4>
 Continue entering commands on the same command line as before:
 <PRE><CODE>
 $ cd
@@ -299,7 +336,7 @@ $ cp ~/bl31/arm-trusted-firmware/build/sun50i_h616/release/bl31.bin .
 
 $ gmake CROSS_COMPILE=aarch64-none-elf-
 </CODE></PRE>
-<H4>4.1.3. Prepare the script for write u-boot binary to OPI SPI-Flash memory.</H4>
+<H4 id=p4.1.3>4.1.3. Prepare the script for write u-boot binary to OPI SPI-Flash memory.</H4>
 Continue entering commands on the same command line as before:
 <PRE><CODE>
 $ echo 'bootcmd=gpio set 76;sf probe;sf erase 0 0x200000;load mmc 0 0x42000000 u-boot-sunxi-with-spl.bin;sf write 0x42000000 0 0x200000;while true;do gpio toggle 76;gpio toggle 77;sleep 1;done' > uboot.txt
@@ -310,7 +347,7 @@ $ exit
 
 $ exit
 </CODE></PRE>
-<H3>4.2. Prepare microSD card.</H3>
+<H3 id=p4.2>4.2. Prepare microSD card.</H3>
 This card will be used only once but for each OPI which we would like to run on our network.<br/>
 So, create it, use it and keep it for future when we need to initialise others OPI for work as diskless station.<br/>
 We have to create a FAT partition on the card where we will put u-boot image file and the writing script,
@@ -352,13 +389,13 @@ Continue entering commands on the same command line as before:
 
 $ exit
 </CODE></PRE>
-<H3>4.3. Write u-boot image to OPI SPI-Flash memory.</H3>
+<H3 id=p4.3>4.3. Write u-boot image to OPI SPI-Flash memory.</H3>
 <P>Great! Initialisation card is ready and we can initialise our very first Orange PI Zero 2.</P>
 <P>That is very simple now, just insert the card into OPI and turn it on.</P>
 <P>In about 10 seconds after turning OPI on we should see on OPI the red led ligting it does mean that the flash process has been started!</P>
 <P>In about a minute after turning OPI on we should see on OPI the red and green leds are blinking, it does mean that the flash process has been finished,
 so, we can turn OPI off and eject the microSD card.</P>
-<H3>4.4. Configure OPI to boot from SPI-Flash.</H3>
+<H3 id=p4.4>4.4. Configure OPI to boot from SPI-Flash.</H3>
 <P><B>VERY IMPORTANT</B>! We have to inform our OPI that it can boot now from SPI-flash.<BR/>
 To do that we have to install a jumper between two pin contacts: 13 and 14.<BR/>
 They are in the very middle of 26-pin sets.<BR/>
@@ -367,7 +404,7 @@ microSD card does not exists it will try to boot from SPI flash.</P>
 <P>Ok! Congratulations! Our OPI is ready to start diskless booting!<BR/>
 Is that all?<BR/>
 Not quite...
-<H3>4.5. Discovering of MAC-address of OPI.</H3>
+<H3 id=p4.5>4.5. Discovering of MAC-address of OPI.</H3>
 Now, we need to discover what the MAC-address our OPI has.<BR/>
 For do that we have to ssh to build@${{PC_IP}} and enter the following command:
 <PRE><CODE>
@@ -380,9 +417,9 @@ $ sudo tcpdump -i em0 port 67
 <P>So, the MAC address of our OPI is 6 hex numbers after <B>"Request from"</B>.</P>
 <P>Highly likely it will start from 02:00 but may be something else, who knows...</P>
 <P>Ok. We have discovered the MAC address of our OPI. Write it down, we will need it in future and turn the OPI off.</P>
-<H2>5. Preparing the network infrastructure.</H2>
+<H2 id=p5>5. Preparing the network infrastructure.</H2>
 Be patient! We are almost there!
-<H3>5.1. Setup TFTP and NFS servers on PC:</H3>
+<H3 id=p5.1>5.1. Setup TFTP and NFS servers on PC:</H3>
 ssh to build@${{PC_IP}} and execute the commands:
 <PRE><CODE>
 $ sudo bash
@@ -409,7 +446,7 @@ rpc_statd_enable="YES"' >> /etc/rc.conf
 
 $ exit
 </CODE></PRE>
-<H3>5.2. Configure DHCP server:</H3>
+<H3 id=p5.2>5.2. Configure DHCP server:</H3>
 Go to our DHCP server and add configuration required for network boot of our Orange PI Zero 2.<BR/>
 That configuration can vary depends on type DHCP server is used.<BR/>
 Here is an example of configuration of DHCP server working under Linux CentOS 6.<BR/>
@@ -427,7 +464,7 @@ host ${{HOSTNAME_OF_OPI}} {
 Restart the dhcp server. On the CentOS 6 it can be done by command under root:<BR/>
 # service dhcpd restart
 
-<H2>6. Testing.</H2>
+<H2 id=p6>6. Testing.</H2>
 <P>Is that all now???</BR>
 Yes! Eventually we are here!</BR>
 Connect our Orange PI Zero 2 withour microSD card to the network and turn it on.<BR/>

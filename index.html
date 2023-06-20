@@ -63,14 +63,14 @@ and starts u-boot, then u-boot broadcasts DHCP request to the local network look
 <LI>IP address of TFTP server</LI>
 <LI>Filename of OS loader</LI>
 <LI>Where the root of filesystem is placed</LI>
-</UL>
+</UL><BR/>
 After u-boot loads OS loader from TFTP server it starts the loader passing URI of root of filesystem to it then loader loads the FreeBSD kernel
 from the root URI, which is NFS server, and starts the kernel passing root URI to it then kernel initialises the system and starts
 it and works using root filesystem which is placed on NSF server as it would be a usual local disk.</P>
 <B>IMPORTANT:</B> For simplify the things this installation considers that the root filesystem on the dedicated directory on the NFS server will be used exclusevely only by one Orange PI Zero2.<BR/>
 For shared diskless installation we will need slightly more complicated instructions, probably, it will be posted later.
 <H2 id=req>What we will need.</H2>
-We will need the following:
+We will need the following:<BR/>
 <UL>
 <LI>PC architecture amd64, 2 core processor, 4GB RAM, 50GB HDD with microSD card adapter. Just note: that PC will keep all the files for FreeBSD Orange PI Zero2 diskless system.</LI>
 <LI><A HREF="http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-Zero-2.html" target=_blank>Orange PI Zero2</A></LI>
@@ -79,10 +79,8 @@ We will need the following:
 <LI>Local ethernet IP network with connection to internet.</LI>
 <LI>Our own DHCP server on the network with access to configure it.</LI>
 <LI>Two dedicated static IP in our network: for PC and for OPI and two hostnames for them, unique in our network.</LI>
-</UL>
-
+</UL><BR/>
 <b>IMPORTANT NOTE:</b> everywhere in the document we must replace ${{SOME_TEXT}} to the thing which is described by SOME_TEXT, example: ${{OPI_IP}} must be replaced to IP address of OPI.
-
 <H2 id=p1>1. Prepare FreeBSD build machine on PC.</H2>
 <H3 id=p1.1>1.1. Get image of installatin CD from here:</H3>
 <A HREF="https://download.freebsd.org/releases/amd64/amd64/ISO-IMAGES/13.2/FreeBSD-13.2-RELEASE-amd64-disc1.iso.xz">FreeBSD 13.2</A>

@@ -415,7 +415,7 @@ With the jumper between 13 and 14 the OPI will try to boot from microSD card fir
 microSD card does not exists it will try to boot from SPI flash.</P>
 <P>Ok! Congratulations! Our OPI is ready to start diskless booting!<BR/>
 Is that all?<BR/>
-Not quite...
+Not quite...</P>
 <H3 id=p4.5>4.5. Discovering of MAC-address of OPI.</H3>
 Now, we need to discover what the MAC-address our OPI has.<BR/>
 For do that we have to ssh to build@${{PC_IP}} and enter the following command:
@@ -483,7 +483,7 @@ Yes! Eventually we are here!</BR>
 Connect our Orange PI Zero2 withour microSD card to the network and turn it on.<BR/>
 If everything is right then in about 10 seconds we can see red light on Orange PI Zero2, taht is mean the boot process has been started.<BR/>
 In about a minute after the red light appear you should be able to ssh as root to diskless Orange PI Zero2!</P>
-<P>For do that, ssh to build@${{PC_IP}} and execute the command answering "yes" on the question:<P/>
+<P>For do that, ssh to build@${{PC_IP}} and execute the command answering "yes" on the question:</P>
 <PRE><CODE>
 $ ssh root@${{OPI_IP}}
 </CODE></PRE>
@@ -494,6 +494,6 @@ If the red light is not appearing in one minute, try to turn it off and on again
 Try it two-three times.<BR/>
 If that still does not work, try another Orange PI Zero2.<BR/>
 I got the experience that some of my OPIs does not catch DHCP configuration. I do not know why.<BR/>
-If that still does not work, connect the serial console to the Orange PI Zero2 and see what is going on.
+If that still does not work, connect the serial console to the Orange PI Zero2 and see what is going on.</P>
 </BODY></HTML>
 

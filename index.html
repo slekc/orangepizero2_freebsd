@@ -9,7 +9,7 @@ pre code {
 }
 </STYLE>
 </HEAD><BODY>
-<H1>How to run diskless FreeBSD 13.2 on OrangePI Zero 2.</H1>
+<H1>How to run diskless FreeBSD 13.2 on OrangePI Zero2.</H1>
 <P><A href="LICENSE">License of this document</A></P>
 <P>Whole process from scratch.<BR/>Everything is built from sources.</P>
 <H2>Table of content.</H2>
@@ -23,16 +23,16 @@ pre code {
 		<LI><A href="#p1.2">1.2. Install FreeBSD on the PC from the CD image.</A></LI>
 		<LI><A href="#p1.3">1.3 Continue on freshly installed FreeBSD 13.2.</A></LI>
 	</UL></LI>
-	<LI><A href="#p2">2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero 2 and build everything.</A><UL>
+	<LI><A href="#p2">2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero2 and build everything.</A><UL>
 		<LI><A href="#p2.1">2.1. Obtain the sources.</A></LI>
-		<LI><A href="#p2.2">2.2. Make the patch for build dtb-file which will see the ethernet interface of OrangePI Zero 2.</A></LI>
+		<LI><A href="#p2.2">2.2. Make the patch for build dtb-file which will see the ethernet interface of OrangePI Zero2.</A></LI>
 		<LI><A href="#p2.3">2.3. Build everything and put the root of the system into NFSROOT</A></LI>
 	</UL></LI>
 	<LI><A href="#p3">3. Additional settings for diskless clients.</A><UL>
 		<LI><A href="#p3.1">3.1. Creating general configuration for for diskless clients.</A></LI>
-		<LI><A href="#p3.2">3.2. Allow root to do remote login to Orange PI Zero 2.</A></LI>
+		<LI><A href="#p3.2">3.2. Allow root to do remote login to Orange PI Zero2.</A></LI>
 	</UL></LI>
-	<LI><A href="#p4">4. Preparing Orange PI Zero 2 for diskless boot.</A><UL>
+	<LI><A href="#p4">4. Preparing Orange PI Zero2 for diskless boot.</A><UL>
 		<LI><A href="#p4.1">4.1. Create u-boot binary file and script for writing to SPI-Flash.</A><UL>
 			<LI><A href="#p4.1.1">4.1.1. Create firmware binary file bl31.</A></LI>
 			<LI><A href="#p4.1.2">4.1.2. Obtain u-boot sources and build u-boot binary.</A></LI>
@@ -51,12 +51,12 @@ pre code {
 	<LI><A href="#p6">6. Testing.</A></LI>
 </UL>
 <H2 id=atg>About this guide.</H2>
-<P>This guide is covering everything till the moment when we will be able ssh to root to FreeBSD on OrangePI Zero 2 (further in the document we may call it OPI).</P>
-<P>After the installation the OrangePI Zero 2 we will be able to boot from the network without any microSD card installed.</P>
+<P>This guide is covering everything till the moment when we will be able ssh to root to FreeBSD on OrangePI Zero2 (further in the document we may call it OPI).</P>
+<P>After the installation the OrangePI Zero2 we will be able to boot from the network without any microSD card installed.</P>
 <H2 id=hiw>Roughly, how that particular diskless works.</H2>
 <P>It is not using PXE protocol.<BR/>
 It is using default boot scripts embeeded in the latest u-boot version.</P>
-<P>The Orange PI Zero 2 hardware loads u-boot application from 2 megabytes SPI-Flash memory, which is installed onboard,
+<P>The Orange PI Zero2 hardware loads u-boot application from 2 megabytes SPI-Flash memory, which is installed onboard,
 and starts u-boot, then u-boot broadcasts DHCP request to the local network looking for the following information:
 <UL>
 <LI>Its own IP address</LI>
@@ -67,13 +67,13 @@ and starts u-boot, then u-boot broadcasts DHCP request to the local network look
 After u-boot loads OS loader from TFTP server it starts the loader passing URI of root of filesystem to it then loader loads the FreeBSD kernel
 from the root URI, which is NFS server, and starts the kernel passing root URI to it then kernel initialises the system and starts
 it and works using root filesystem which is placed on NSF server as it would be a usual local disk.</P>
-<B>IMPORTANT:</B> For simplify the things this installation considers that the root filesystem on the dedicated directory on the NFS server will be used exclusevely only by one Orange PI Zero 2.<BR/>
+<B>IMPORTANT:</B> For simplify the things this installation considers that the root filesystem on the dedicated directory on the NFS server will be used exclusevely only by one Orange PI Zero2.<BR/>
 For shared diskless installation we will need slightly more complicated instructions, probably, it will be posted later.
 <H2 id=req>What we will need.</H2>
 We will need the following:
 <UL>
-<LI>PC architecture amd64, 2 core processor, 4GB RAM, 50GB HDD with microSD card adapter. Just note: that PC will keep all the files for FreeBSD OrangePI Zero 2 diskless system.</LI>
-<LI><A HREF="http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-Zero-2.html" target=_blank>OrangePI Zero 2</A></LI>
+<LI>PC architecture amd64, 2 core processor, 4GB RAM, 50GB HDD with microSD card adapter. Just note: that PC will keep all the files for FreeBSD OrangePI Zero2 diskless system.</LI>
+<LI><A HREF="http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-Zero-2.html" target=_blank>OrangePI Zero2</A></LI>
 <LI>microSD card 100MB or more, ideally it should be SanDisk, <A HREF="http://www.orangepi.org/orangepiwiki/index.php/File:Orange-pi-3-lts-sdcard.png" target=_blank>like that</A>.
 <B>Other cards can work but unstable, not recomended!</B></LI>
 <LI>Local ethernet IP network with connection to internet.</LI>
@@ -130,8 +130,8 @@ Enter the following commands:
 
 $ exit
 </CODE></PRE>
-Great! Everything is ready now to build the FreeBSD from sources for OrangePI Zero 2 which has architecture arm64.
-<H2 id=p2>2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero 2 and build everything.</H2>
+Great! Everything is ready now to build the FreeBSD from sources for OrangePI Zero2 which has architecture arm64.
+<H2 id=p2>2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero2 and build everything.</H2>
 <H3 id=p2.1>2.1. Obtain the sources.</H3>
 ssh to build@${{PC_IP}}, execute the commands:
 <PRE><CODE>
@@ -161,8 +161,8 @@ $ cd src
 
 $ git checkout release/13.2.0
 </CODE></PRE>
-<H3 id=p2.2>2.2. Make the patch for build dtb-file which will see the ethernet interface of OrangePI Zero 2.</H3>
-Note: FreeBSD 13.2 does not oficially support Orange PI Zero 2, so, we have to do that patch.<BR/>
+<H3 id=p2.2>2.2. Make the patch for build dtb-file which will see the ethernet interface of OrangePI Zero2.</H3>
+Note: FreeBSD 13.2 does not oficially support Orange PI Zero2, so, we have to do that patch.<BR/>
 The patch will allow FreeBSD 13.2 to see only ethernet interface, USB and microSD card will still be unavailable.<BR/>
 We are making diskless station, so, only ethernet will be enough for us.
 <BR/><BR/>
@@ -280,7 +280,7 @@ ntpd_enable="YES"' > $NFSROOT/etc/rc.conf
 $PC_IP:$NFSROOT /      nfs     rw            0     0
 proc                                                   /proc  procfs  rw            0     0" > $NFSROOT/etc/fstab
 </CODE></PRE>
-<H3 id=p3.2>3.2. Allow root to do remote login to Orange PI Zero 2.</H3>
+<H3 id=p3.2>3.2. Allow root to do remote login to Orange PI Zero2.</H3>
 After everything will be started, we need remote root access to our OPI for continue the configuration.<BR/>
 So, we are changing sshd configuration.<BR/>
 Continue entering commands on the same command line as before:
@@ -297,9 +297,9 @@ $ exit
 
 $ exit
 </CODE></PRE>
-Great! Almost everything is done in the root filesystem for our diskless Orange PI Zero 2!
-Let us go to prepare the Orange PI Zero 2 hardware itself.
-<H2 id=p4>4. Preparing Orange PI Zero 2 for diskless boot.</H2>
+Great! Almost everything is done in the root filesystem for our diskless Orange PI Zero2!
+Let us go to prepare the Orange PI Zero2 hardware itself.
+<H2 id=p4>4. Preparing Orange PI Zero2 for diskless boot.</H2>
 <H3 id=p4.1>4.1. Create u-boot binary file and script for writing to SPI-Flash.</H3>
 ssh to build@${{PC_IP}}
 <H4>4.1.1. Create firmware binary file bl31.</H4>
@@ -402,7 +402,7 @@ Continue entering commands on the same command line as before:
 # exit
 </CODE></PRE>
 <H3 id=p4.3>4.3. Write u-boot image to OPI SPI-Flash memory.</H3>
-<P>Great! Initialisation card is ready and we can initialise our very first Orange PI Zero 2.</P>
+<P>Great! Initialisation card is ready and we can initialise our very first Orange PI Zero2.</P>
 <P>That is very simple now, just insert the card into OPI and turn it on.</P>
 <P>In about 10 seconds after turning OPI on we should see on OPI the red led ligting it does mean that the flash process has been started!</P>
 <P>In about a minute after turning OPI on we should see on OPI the red and green leds are blinking, it does mean that the flash process has been finished,
@@ -460,7 +460,7 @@ rpc_statd_enable="YES"' >> /etc/rc.conf
 $ exit
 </CODE></PRE>
 <H3 id=p5.2>5.2. Configure DHCP server:</H3>
-Go to our DHCP server and add configuration required for network boot of our Orange PI Zero 2.<BR/>
+Go to our DHCP server and add configuration required for network boot of our Orange PI Zero2.<BR/>
 That configuration can vary depends on type DHCP server is used.<BR/>
 Here is an example of configuration of DHCP server working under Linux CentOS 6.<BR/>
 Add the following lines to /etc/dhcp/dhcpd.conf:
@@ -480,9 +480,9 @@ Restart the dhcp server. On the CentOS 6 it can be done by command under root:<B
 <H2 id=p6>6. Testing.</H2>
 <P>Is that all now???</BR>
 Yes! Eventually we are here!</BR>
-Connect our Orange PI Zero 2 withour microSD card to the network and turn it on.<BR/>
-If everything is right then in about 10 seconds we can see red light on Orange PI Zero 2, taht is mean the boot process has been started.<BR/>
-In about a minute after the red light appear you should be able to ssh as root to diskless Orange PI Zero 2!</P>
+Connect our Orange PI Zero2 withour microSD card to the network and turn it on.<BR/>
+If everything is right then in about 10 seconds we can see red light on Orange PI Zero2, taht is mean the boot process has been started.<BR/>
+In about a minute after the red light appear you should be able to ssh as root to diskless Orange PI Zero2!</P>
 <P>For do that, ssh to build@${{PC_IP}} and execute the command answering "yes" on the question:<P/>
 <PRE><CODE>
 $ ssh root@${{OPI_IP}}
@@ -492,8 +492,8 @@ $ ssh root@${{OPI_IP}}
 Postscriptum:<BR/>
 If the red light is not appearing in one minute, try to turn it off and on again.<BR/>
 Try it two-three times.<BR/>
-If that still does not work, try another Orange PI Zero 2.<BR/>
+If that still does not work, try another Orange PI Zero2.<BR/>
 I got the experience that some of my OPIs does not catch DHCP configuration. I do not know why.<BR/>
-If that still does not work, connect the serial console to the Orange PI Zero 2 and see what is going on.
+If that still does not work, connect the serial console to the Orange PI Zero2 and see what is going on.
 </BODY></HTML>
 

@@ -29,15 +29,15 @@ pre code {
 		<LI><A href="#p2.3">2.3. Build everything and put the root of the system into NFSROOT</A></LI>
 	</UL></LI>
 	<LI><A href="#p3">3. Additional settings for diskless clients.</A><UL>
-		<LI><A href="#p3.1">Creating general configuration for for diskless clients.</A></LI>
-		<LI><A href="#p3.2">Allow root to do remote login to Orange PI Zero 2.</A></LI>
-		<LI><A href="#p3.3">Script for u-boot to let us know that the boot process has been started.</A></LI>
+		<LI><A href="#p3.1">3.1. Creating general configuration for for diskless clients.</A></LI>
+		<LI><A href="#p3.2">3.2. Allow root to do remote login to Orange PI Zero 2.</A></LI>
 	</UL></LI>
 	<LI><A href="#p4">4. Preparing Orange PI Zero 2 for diskless boot.</A><UL>
 		<LI><A href="#p4.1">4.1. Create u-boot binary file and script for writing to SPI-Flash.</A><UL>
 			<LI><A href="#p4.1.1">4.1.1. Create firmware binary file bl31.</A></LI>
 			<LI><A href="#p4.1.2">4.1.2. Obtain u-boot sources and build u-boot binary.</A></LI>
 			<LI><A href="#p4.1.3">4.1.3. Prepare the script for write u-boot binary to OPI SPI-Flash memory.</A></LI>
+			<LI><A href="#p4.1.4">4.1.4. Script for u-boot to let us know that the boot process has been started.</A></LI>
 		</UL></LI>
 		<LI><A href="#p4.2">4.2. Prepare microSD card.</A></LI>
 		<LI><A href="#p4.3">4.3. Write u-boot image to OPI SPI-Flash memory.</A></LI>
@@ -279,29 +279,12 @@ Continue entering commands on the same command line as before:
 
 # exit
 </CODE></PRE>
-<H3 id=p3.3>3.3. Script for u-boot to let us know that the boot process has been started.</H3>
-Continue entering commands on the same command line as before:
-<PRE><CODE>
-$ cd ~/u-boot
-
-$ echo 'gpio set 76;gpio clear 77' > boot.scr
-
-$ tools/mkimage -A arm -T script -d boot.scr boot.scr.uimg
-
-$ sudo cp boot.scr.uimg /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/boot
-
-$ exit
-
-$ exit
-
-</CODE></PRE>
 <H2 id=p4>4. Preparing Orange PI Zero 2 for diskless boot.</H2>
 <H3 id=p4.1>4.1. Create u-boot binary file and script for writing to SPI-Flash.</H3>
 ssh to build@${{PC_IP}}
 <H4>4.1.1. Create firmware binary file bl31.</H4>
 Execute commands:
 <PRE><CODE>
-$ bash
 
 $ cd
 
@@ -348,6 +331,22 @@ $ tools/mkenvimage -s 65536 -o uboot.env uboot.txt
 $ exit
 
 $ exit
+</CODE></PRE>
+<H4 id=p4.1.4>4.1.4 Script for u-boot to let us know that the boot process has been started.</H4>
+Continue entering commands on the same command line as before:
+<PRE><CODE>
+$ cd ~/u-boot
+
+$ echo 'gpio set 76;gpio clear 77' > boot.scr
+
+$ tools/mkimage -A arm -T script -d boot.scr boot.scr.uimg
+
+$ sudo cp boot.scr.uimg /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/boot
+
+$ exit
+
+$ exit
+
 </CODE></PRE>
 <H3 id=p4.2>4.2. Prepare microSD card.</H3>
 This card will be used only once but for each OPI which we would like to run on our network.<br/>

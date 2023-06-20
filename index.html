@@ -240,11 +240,22 @@ $ sudo -E make installkernel TARGET_ARCH=aarch64 KERNCONF=GENERIC DESTDIR=$DESTD
 <H2 id=p3>3. Additional settings for diskless clients.</H2>
 These settings will be done in the diskless clients root filesystem which we have placed at /exports/orangepizero2-${{HOSTNAME_OF_OPI}}
 <H3 id=p3.1>3.1. Creating general configuration for for diskless clients.</H3>
-Continue entering commands on the same command line as before:
+Continue entering commands on the same command line as before.<BR/>
+Press "Enter" on any question.
 <PRE><CODE>
+$ cd
+
+$ ssh-keygen
+
 $ sudo bash
 
-# cp /etc/resolv.conf /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/etc
+# NFSROOT=/exports/orangepizero2-${{HOSTNAME_OF_OPI}}
+
+# mkdir $NFSROOT/root/.ssh
+
+# cp .ssh/id_rsa.pub $NFSROOT/root/.ssh/authorized_keys
+
+# cp /etc/resolv.conf $NFSROOT/etc
 
 # echo 'sshd_enable="YES" # We need ssh access
 background_fsck="NO"      # NEVER run fsck on nfs mounted partitions
@@ -252,30 +263,22 @@ nfs_client_enable="YES"   # The diskless client is an NFS client
 rpc_lockd_enable="YES"    # Some application require file locking
 rpc_statd_enable="YES"    # Some application require file locking
 ntpdate_enable="YES"      # We need actual date/time
-ntpd_enable="YES"' > /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/etc/rc.conf
+ntpd_enable="YES"' > $NFSROOT/etc/rc.conf
 
-# echo '# Device                                               Mount  FStype  Options       Dump  Pass
-${{PC_IP}}:/exports/orangepizero2-${{HOSTNAME_OF_OPI}} /      nfs     rw            0     0
-proc                                                   /proc  procfs  rw            0     0' > /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/etc/fstab
+# echo "# Device                                               Mount  FStype  Options       Dump  Pass
+${{PC_IP}}:$NFSROOT /      nfs     rw            0     0
+proc                                                   /proc  procfs  rw            0     0" > $NFSROOT/etc/fstab
 </CODE></PRE>
 <H3 id=p3.2>3.2. Allow root to do remote login to Orange PI Zero 2.</H3>
 After everything will be started, we need remote root access to our OPI for continue the configuration.<BR/>
-So, we are changing sshd configuration and putting our ssh public key to the OPI root home directory.<BR/>
+So, we are changing sshd configuration.<BR/>
 Continue entering commands on the same command line as before:
 <PRE><CODE>
-# cd /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/etc/ssh
+# cd $NFSROOT/etc/ssh
 
 # cat sshd_config | sed 's/#PermitRootLogin no/PermitRootLogin yes/g' > sshd_config.new
 
 # mv sshd_config.new sshd_config
-
-# cd /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/root
-
-# mkdir .ssh
-
-# cd .ssh
-
-# echo '${{OUR_SSH_PUBLIC_KEY}}' > authorized_keys
 
 # exit
 </CODE></PRE>

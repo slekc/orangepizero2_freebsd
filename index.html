@@ -9,7 +9,7 @@ pre code {
 }
 </STYLE>
 </HEAD><BODY>
-<H1>How to run diskless FreeBSD 13.2 on OrangePI Zero2.</H1>
+<H1>How to run diskless FreeBSD 13.2 on Orange PI Zero2.</H1>
 <P><A href="LICENSE">License of this document</A></P>
 <P>Whole process from scratch.<BR/>Everything is built from sources.</P>
 <H2>Table of content.</H2>
@@ -23,9 +23,9 @@ pre code {
 		<LI><A href="#p1.2">1.2. Install FreeBSD on the PC from the CD image.</A></LI>
 		<LI><A href="#p1.3">1.3 Continue on freshly installed FreeBSD 13.2.</A></LI>
 	</UL></LI>
-	<LI><A href="#p2">2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero2 and build everything.</A><UL>
+	<LI><A href="#p2">2. Obtain sources of FreeBSD 13.2, make patch for Orange PI Zero2 and build everything.</A><UL>
 		<LI><A href="#p2.1">2.1. Obtain the sources.</A></LI>
-		<LI><A href="#p2.2">2.2. Make the patch for build dtb-file which will see the ethernet interface of OrangePI Zero2.</A></LI>
+		<LI><A href="#p2.2">2.2. Make the patch for build dtb-file which will see the ethernet interface of Orange PI Zero2.</A></LI>
 		<LI><A href="#p2.3">2.3. Build everything and put the root of the system into NFSROOT</A></LI>
 	</UL></LI>
 	<LI><A href="#p3">3. Additional settings for diskless clients.</A><UL>
@@ -51,8 +51,8 @@ pre code {
 	<LI><A href="#p6">6. Testing.</A></LI>
 </UL>
 <H2 id=atg>About this guide.</H2>
-<P>This guide is covering everything till the moment when we will be able ssh to root to FreeBSD on OrangePI Zero2 (further in the document we may call it OPI).</P>
-<P>After the installation the OrangePI Zero2 we will be able to boot from the network without any microSD card installed.</P>
+<P>This guide is covering everything till the moment when we will be able ssh to root to FreeBSD on Orange PI Zero2 (further in the document we may call it OPI).</P>
+<P>After the installation the Orange PI Zero2 we will be able to boot from the network without any microSD card installed.</P>
 <H2 id=hiw>Roughly, how that particular diskless works.</H2>
 <P>It is not using PXE protocol.<BR/>
 It is using default boot scripts embeeded in the latest u-boot version.</P>
@@ -72,8 +72,8 @@ For shared diskless installation we will need slightly more complicated instruct
 <H2 id=req>What we will need.</H2>
 We will need the following:
 <UL>
-<LI>PC architecture amd64, 2 core processor, 4GB RAM, 50GB HDD with microSD card adapter. Just note: that PC will keep all the files for FreeBSD OrangePI Zero2 diskless system.</LI>
-<LI><A HREF="http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-Zero-2.html" target=_blank>OrangePI Zero2</A></LI>
+<LI>PC architecture amd64, 2 core processor, 4GB RAM, 50GB HDD with microSD card adapter. Just note: that PC will keep all the files for FreeBSD Orange PI Zero2 diskless system.</LI>
+<LI><A HREF="http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-Zero-2.html" target=_blank>Orange PI Zero2</A></LI>
 <LI>microSD card 100MB or more, ideally it should be SanDisk, <A HREF="http://www.orangepi.org/orangepiwiki/index.php/File:Orange-pi-3-lts-sdcard.png" target=_blank>like that</A>.
 <B>Other cards can work but unstable, not recomended!</B></LI>
 <LI>Local ethernet IP network with connection to internet.</LI>
@@ -130,8 +130,8 @@ Enter the following commands:
 
 $ exit
 </CODE></PRE>
-Great! Everything is ready now to build the FreeBSD from sources for OrangePI Zero2 which has architecture arm64.
-<H2 id=p2>2. Obtain sources of FreeBSD 13.2, make patch for OrangePI Zero2 and build everything.</H2>
+Great! Everything is ready now to build the FreeBSD from sources for Orange PI Zero2 which has architecture arm64.
+<H2 id=p2>2. Obtain sources of FreeBSD 13.2, make patch for Orange PI Zero2 and build everything.</H2>
 <H3 id=p2.1>2.1. Obtain the sources.</H3>
 ssh to build@${{PC_IP}}, execute the commands:
 <PRE><CODE>
@@ -161,7 +161,7 @@ $ cd src
 
 $ git checkout release/13.2.0
 </CODE></PRE>
-<H3 id=p2.2>2.2. Make the patch for build dtb-file which will see the ethernet interface of OrangePI Zero2.</H3>
+<H3 id=p2.2>2.2. Make the patch for build dtb-file which will see the ethernet interface of Orange PI Zero2.</H3>
 Note: FreeBSD 13.2 does not oficially support Orange PI Zero2, so, we have to do that patch.<BR/>
 The patch will allow FreeBSD 13.2 to see only ethernet interface, USB and microSD card will still be unavailable.<BR/>
 We are making diskless station, so, only ethernet will be enough for us.

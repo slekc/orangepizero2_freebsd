@@ -297,7 +297,7 @@ $ exit
 
 $ exit
 </CODE></PRE>
-Great! Everything is done in the root filesystem for our diskless Orange PI Zero 2!
+Great! Almost everything is done in the root filesystem for our diskless Orange PI Zero 2!
 Let us go to prepare the Orange PI Zero 2 hardware itself.
 <H2 id=p4>4. Preparing Orange PI Zero 2 for diskless boot.</H2>
 <H3 id=p4.1>4.1. Create u-boot binary file and script for writing to SPI-Flash.</H3>
@@ -305,6 +305,8 @@ ssh to build@${{PC_IP}}
 <H4>4.1.1. Create firmware binary file bl31.</H4>
 Execute commands:
 <PRE><CODE>
+
+$ bash
 
 $ cd
 
@@ -347,10 +349,6 @@ Continue entering commands on the same command line as before:
 $ echo 'bootcmd=gpio set 76;sf probe;sf erase 0 0x200000;load mmc 0 0x42000000 u-boot-sunxi-with-spl.bin;sf write 0x42000000 0 0x200000;while true;do gpio toggle 76;gpio toggle 77;sleep 1;done' > uboot.txt
 
 $ tools/mkenvimage -s 65536 -o uboot.env uboot.txt
-
-$ exit
-
-$ exit
 </CODE></PRE>
 <H4 id=p4.1.4>4.1.4 Script for u-boot to let us know that the boot process has been started.</H4>
 Continue entering commands on the same command line as before:
@@ -362,11 +360,6 @@ $ echo 'gpio set 76;gpio clear 77' > boot.scr
 $ tools/mkimage -A arm -T script -d boot.scr boot.scr.uimg
 
 $ sudo cp boot.scr.uimg /exports/orangepizero2-${{HOSTNAME_OF_OPI}}/boot
-
-$ exit
-
-$ exit
-
 </CODE></PRE>
 <H3 id=p4.2>4.2. Prepare microSD card.</H3>
 This card will be used only once but for each OPI which we would like to run on our network.<br/>
@@ -407,8 +400,6 @@ Continue entering commands on the same command line as before:
 # umount /mnt
 
 # exit
-
-$ exit
 </CODE></PRE>
 <H3 id=p4.3>4.3. Write u-boot image to OPI SPI-Flash memory.</H3>
 <P>Great! Initialisation card is ready and we can initialise our very first Orange PI Zero 2.</P>
@@ -438,6 +429,7 @@ $ sudo tcpdump -i em0 port 67
 <P>So, the MAC address of our OPI is 6 hex numbers after <B>"Request from"</B>.</P>
 <P>Highly likely it will start from 02:00 but may be something else, who knows...</P>
 <P>Ok. We have discovered the MAC address of our OPI. Write it down, we will need it in future and turn the OPI off.</P>
+<P>Close the terminal where we started tcpdump.</P>
 <H2 id=p5>5. Preparing the network infrastructure.</H2>
 Be patient! We are almost there!
 <H3 id=p5.1>5.1. Setup TFTP and NFS servers on PC:</H3>
@@ -491,6 +483,10 @@ Yes! Eventually we are here!</BR>
 Connect our Orange PI Zero 2 withour microSD card to the network and turn it on.<BR/>
 If everything is right then in about 10 seconds we can see red light on Orange PI Zero 2, taht is mean the boot process has been started.<BR/>
 In about a minute after the red light appear you should be able to ssh as root to diskless Orange PI Zero 2!</P>
+<P>For do that, ssh to ssh to build@${{PC_IP}} and execute the command ansvering "yes" on the question:<P/>
+<PRE><CODE>
+$ ssh root@${{OPI_IP}}
+</CODE></PRE>
 <P>Horray!! We did it!!!</P>
 <P>
 Postscriptum:<BR/>

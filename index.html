@@ -90,6 +90,7 @@ We will need the following:
 <UL>
 <LI>Answer all installation questions as default.</LI>
 <LI>Set static IP address: ${{PC_IP}}
+<LI><B>Configure ONLY ONE network interface!</B></LI>
 <LI>Additional services started at boot: ntpdate, ntpd.
 <LI>Create additional username: "build" invite to additional group "wheel"</LI>
 </UL>
@@ -265,8 +266,10 @@ rpc_statd_enable="YES"    # Some application require file locking
 ntpdate_enable="YES"      # We need actual date/time
 ntpd_enable="YES"' > $NFSROOT/etc/rc.conf
 
+# PC_IP=$(ifconfig|grep broadcast|awk '{print $2}')
+
 # echo "# Device                                               Mount  FStype  Options       Dump  Pass
-${{PC_IP}}:$NFSROOT /      nfs     rw            0     0
+$PC_IP:$NFSROOT /      nfs     rw            0     0
 proc                                                   /proc  procfs  rw            0     0" > $NFSROOT/etc/fstab
 </CODE></PRE>
 <H3 id=p3.2>3.2. Allow root to do remote login to Orange PI Zero 2.</H3>

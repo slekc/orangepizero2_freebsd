@@ -379,7 +379,7 @@ $ sudo bash
 So, card is empty now and we can create everything what we need.<br/>
 Continue entering commands on the same command line as before:
 <PRE><CODE>
-# gpart create -s mbr $SD
+# gpart create -s mbr $SD # If you have an error here, return back to command "gpart destroy"
 
 # gpart add -a 3M -t fat16 -s 20M $SD #Started from 3mbyte, leaving space for u-boot
 

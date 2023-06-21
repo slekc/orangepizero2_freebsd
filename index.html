@@ -370,7 +370,7 @@ Insert the card into PC and continue on the same terminal as before:<br/>
 <PRE><CODE>
 $ sudo bash
 
-# SD=${{path_to_microSD_card_device}}
+# SD=${{path_to_microSD_card_device}} #Usually on the PC with SSD hard drive it is "/dev/da0", <B>but be carefully, doublecheck what it is on your PC!</B>
 
 # gpart destroy -F $SD #Here may be error if card already empty
 

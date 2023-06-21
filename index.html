@@ -425,7 +425,7 @@ $ sudo tcpdump -i $(ifconfig|awk '{i=$1;if((i==substr($0,1,length(i)))&&(i!="lo0
 <P>So, the MAC address of our OPI is 6 hex numbers after <B>"Request from"</B>.</P>
 <P>Highly likely it will start from 02:00 but may be something else, who knows...</P>
 <P>Ok. We have discovered the MAC address of our OPI. Write it down, we will need it in future and turn the OPI off.</P>
-<P>Close the terminal where we started tcpdump.</P>
+<P>Turn the OPI off and close the terminal where we started tcpdump.</P>
 <H2 id=p5>5. Preparing the network infrastructure.</H2>
 Be patient! We are almost there!
 <H3 id=p5.1>5.1. Setup TFTP and NFS servers on PC:</H3>

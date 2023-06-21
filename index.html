@@ -416,7 +416,7 @@ Not quite...</P>
 Now, we need to discover what the MAC-address our OPI has.<BR/>
 For do that enter the following command on the same command line as before:
 <PRE><CODE>
-$ sudo tcpdump -i em0 port 67
+$ sudo tcpdump -i ${{THE_CONFIGURED_NETWORK_INTERFACE}} port 67
 </CODE></PRE>
 <P>It will stuck here and will display all DHCP requests which will appear in our network.</P>
 <P>After run that command, connect the OPI (without the microSD card) to the network and turn it on.</P>

@@ -353,8 +353,6 @@ $ tools/mkenvimage -s 65536 -o uboot.env uboot.txt
 <H4 id=p4.1.4>4.1.4 Script for u-boot to let us know that the boot process has been started.</H4>
 Continue entering commands on the same command line as before:
 <PRE><CODE>
-$ cd ~/u-boot
-
 $ echo 'gpio set 76;gpio clear 77' > boot.scr
 
 $ tools/mkimage -A arm -T script -d boot.scr boot.scr.uimg

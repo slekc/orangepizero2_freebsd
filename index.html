@@ -366,10 +366,8 @@ We have to create a FAT partition on the card where we will put u-boot image fil
 also we have to put u-boot image to special non-partitioned space on the card where OPI hardware can find it and start to boot.<br/>
 That is VERY importand that card MUST be empty, without any partitions on it.<br/>
 So, to make sure that it is empty we cleanup it first.<br/><br/>
-Insert the card into PC and do ssh to build@${{PC_IP}} and enter the following commands:<br/>
+Insert the card into PC and continue on the same terminal as before:<br/>
 <PRE><CODE>
-$ cd ~/u-boot
-
 $ sudo bash
 
 # SD=${{path_to_microSD_card_device}}

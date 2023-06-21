@@ -482,6 +482,8 @@ In about a minute after the red light appear you should be able to ssh as root t
 <P>For do that, ssh to build@${{PC_IP}} and execute the command answering "yes" on the question:</P>
 <PRE><CODE>
 $ ssh root@${{OPI_IP}}
+# pkg install bash
+# bash
 # echo "$(ifconfig|grep broadcast|awk '{print $2}') $(hostname)" >> /etc/hosts
 </CODE></PRE>
 <P>Horray!! We did it!!!</P>

@@ -48,7 +48,7 @@ pre code {
 		<LI><A href="#p5.1">5.1. Setup TFTP and NFS servers on PC.</A></LI>
 		<LI><A href="#p5.2">5.2. Configure DHCP server.</A></LI>
 	</UL></LI>
-	<LI><A href="#p6">6. Testing.</A></LI>
+	<LI><A href="#p6">Testing and final touch.</A></LI>
 </UL>
 <H2 id=atg>About this guide.</H2>
 <P>This guide is covering everything till the moment when we will be able ssh to root to FreeBSD on Orange PI Zero2 (further in the document we may call it OPI).</P>
@@ -264,6 +264,8 @@ $ sudo bash
 
 # cp /etc/resolv.conf $NFSROOT/etc
 
+# cp /etc/hosts $NFSROOT/etc
+
 # echo 'sshd_enable="YES" # We need ssh access
 background_fsck="NO"      # NEVER run fsck on nfs mounted partitions
 nfs_client_enable="YES"   # The diskless client is an NFS client
@@ -475,7 +477,7 @@ host ${{HOSTNAME_OF_OPI}} {
 Restart the dhcp server. On the CentOS 6 it can be done by command under root:<BR/>
 # service dhcpd restart
 
-<H2 id=p6>6. Testing.</H2>
+<H2 id=p6>6. Testing and final touch.</H2>
 <P>Is that all now???</BR>
 Yes! Eventually we are here!</BR>
 Connect our Orange PI Zero2 withour microSD card to the network and turn it on.<BR/>
@@ -484,6 +486,7 @@ In about a minute after the red light appear you should be able to ssh as root t
 <P>For do that, ssh to build@${{PC_IP}} and execute the command answering "yes" on the question:</P>
 <PRE><CODE>
 $ ssh root@${{OPI_IP}}
+# echo "$(ifconfig|grep broadcast|awk '{print $2}') $(hostname)" >> /etc/hosts
 </CODE></PRE>
 <P>Horray!! We did it!!!</P>
 <P>
